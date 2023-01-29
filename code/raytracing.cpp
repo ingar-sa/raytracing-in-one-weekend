@@ -5,14 +5,14 @@
 // #define IMAGE_WIDTH 256;
 // #define IMAGE_HEIGHT 256
 
-const char ppm_filename[] = "image.ppm";
+const char ppm_filename[] = "../build/image.ppm";
 const int IMAGE_WIDTH = 256;
 const int IMAGE_HEIGHT = 256;
 
 void TestVec3()
 {
-    vec3 Vec1 = { 10.0, -20.0, 30.0 };
-    vec3 Vec2 = { 1.0, 2.0, 2.0 };
+    vec3 Vec1 = {10.0, -20.0, 30.0};
+    vec3 Vec2 = {1.0, 2.0, 2.0};
 
     vec3 VecOut = {};
     Vec3Add(&Vec1, &Vec2, &VecOut);
@@ -28,10 +28,9 @@ void TestVec3()
     printf("Vec2 Length squared: %f\n\n", Vec2LengthSquared);
 
     printf("Vec2 length: %f\n\n", Vec3Length(&Vec2));
-
 }
 
-int main()
+void GeneratePPMFile()
 {
     char FileLine[15] = {};
     FILE *ImageFile = fopen(ppm_filename, "w");
@@ -52,14 +51,16 @@ int main()
             int IB = (int)(255.999 * B);
 
             fprintf(ImageFile, "%d %d %d\n", IR, IG, IB);
-            
         }
     }
 
     fclose(ImageFile);
+}
 
+int main()
+{
+    GeneratePPMFile();
     TestVec3();
 
     return 0;
 }
-

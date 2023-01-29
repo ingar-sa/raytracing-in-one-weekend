@@ -1,3 +1,6 @@
 /code/build
 /code/run
 build
+**/*.bat
+**/*.ppm
+.vscode
