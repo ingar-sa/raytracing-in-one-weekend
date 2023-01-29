@@ -1,8 +1,0 @@
-#!/bin/bash
-
-echo "==================STARTING BUILD=================="
-pushd ../build &> /dev/null
-g++ -Wextra -g -mavx -o raytracing ../code/raytracing.cpp ../code/vec3.cpp
-popd &> /dev/null
-echo "==================BUILD FINISHED==================
-"

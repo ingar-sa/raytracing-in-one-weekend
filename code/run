@@ -1,5 +1,0 @@
-#!/bin/bash
-
-pushd ../build &> /dev/null
-./raytracing
-popd &> /dev/null
