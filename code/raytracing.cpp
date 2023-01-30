@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-
+#include <math.>
 #include "vec3.hpp"
 #include "color.hpp"
 #include "ray.hpp"
@@ -31,7 +31,7 @@ void GenerateExamplePPMFile()
     fclose(ImageFile);
 }
 
-color RayColor(ray *Ray)
+color BackgroundColor(ray *Ray)
 {
     vec3 DirectionUnitVector = Vec3NewUnitVector(&Ray->Direction);
     double Scalar = 0.5 * (DirectionUnitVector.Y + 1.0);
@@ -46,7 +46,58 @@ color RayColor(ray *Ray)
     return RayColor;
 }
 
-void RenderBlueGradient()
+double HitSphere(point3 *Center, double Radius, ray *Ray)
+{
+    // We will be using the abc-formula: (-b +/- sqrt(b^2-4ac))/2
+    vec3 OriginToCenter = {};
+    Vec3Sub(&Ray->Origin, Center, &OriginToCenter);
+
+    double a = Vec3Dot(&Ray->Direction, &Ray->Direction);
+    double b = 2.0 * Vec3Dot(&OriginToCenter, &Ray->Direction);
+    double c = Vec3Dot(&OriginToCenter, &OriginToCenter) - Radius * Radius;
+    double Discriminant = b * b - 4 * a * c;
+
+    if (Discriminant < 0)
+    {
+        return -1.0;
+    }
+    else
+    {
+        return (-b - sqrt(Discriminant)) / (2.0 * a);
+    }
+    
+}
+
+
+color ray_color(const ray& r) {
+    auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+    if (t > 0.0) {
+        vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
+        return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+    }
+    vec3 unit_direction = unit_vector(r.direction());
+    t = 0.5*(unit_direction.y() + 1.0);
+    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+}
+
+color RayColor(ray *Ray)
+{
+    point3 RedBall = {0, 0, -1};
+    double t = HitSphere(&RedBall, 0.5, Ray);
+
+    if (t < 0.0)
+    {
+        point3 RayAtT = RayAtTime(Ray, t);
+        
+        vec3 Normal = Vec3NewUnitVector()
+        RayColor.X = 1.0;
+        return RayColor;
+    }
+
+    return BackgroundColor(Ray);
+}
+
+void RenderScene()
 {
     const float AspectRatio = 16.0 / 9.0;
     const int32_t ImageWidth = 1080;
@@ -81,7 +132,7 @@ void RenderBlueGradient()
         {
             double U = (double)X / (ImageWidth - 1);
             double V = (double)Y / (ImageHeight - 1);
-            vec3 UHorizontal = Vec3NewScaled(&Horizontal,U);
+            vec3 UHorizontal = Vec3NewScaled(&Horizontal, U);
             vec3 VVertical = Vec3NewScaled(&Vertical, V);
 
             vec3 RayDirection = {};
@@ -101,7 +152,7 @@ int main()
     // GeneratePPMFile();
     // TestVec3();
 
-    RenderBlueGradient();
+    RenderScene();
 
     return 0;
 }
