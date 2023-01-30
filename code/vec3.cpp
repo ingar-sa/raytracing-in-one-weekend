@@ -1,7 +1,6 @@
 #include <immintrin.h>
-#include <math.h>
-
 #include <stdio.h>
+#include <math.h>
 
 #include "vec3.hpp"
 
@@ -71,6 +70,7 @@ void Vec3Cross(vec3 *Vec1, vec3 *Vec2, vec3 *VecOut)
     VecOut->Z = U0 * V1 - U1 * V0;
 }
 
+// NOTE(ingar): It might be prudent to make a version that returns a new vec3 
 void Vec3Scale(vec3 *Vec, double Scalar)
 {
     double aScalar[4] = {Scalar, Scalar, Scalar, Scalar};
@@ -84,6 +84,20 @@ void Vec3Scale(vec3 *Vec, double Scalar)
     Vec->X = Result[0];
     Vec->Y = Result[1];
     Vec->Z = Result[2];
+}
+
+vec3 Vec3NewScaled(vec3 *Vec, double Scalar)
+{
+    double aScalar[4] = {Scalar, Scalar, Scalar, Scalar};
+
+    __m256d mVec = _mm256_loadu_pd((const double *)Vec);
+    __m256d mScalar = _mm256_loadu_pd((double *)aScalar);
+    __m256d mResult = _mm256_mul_pd(mVec, mScalar);
+
+    double *Result = (double *)&mResult;
+
+    vec3 ScaledVec = { Result[0], Result[1], Result[2] };
+    return ScaledVec;
 }
 
 double Vec3LengthSquared(vec3 *Vec)
@@ -103,9 +117,15 @@ double Vec3Length(vec3 *Vec)
     return sqrt(Vec3LengthSquared(Vec));
 }
 
-void UnitVector(vec3 *Vec)
+// NOTE(ingar): It might be prudent to make a version that returns a new vec3 
+void Vec3UnitVector(vec3 *Vec)
 {
     Vec3Scale(Vec, 1.0/Vec3Length(Vec));
+}
+
+vec3 Vec3NewUnitVector(vec3 *Vec)
+{
+    return Vec3NewScaled(Vec, 1.0/Vec3Length(Vec));
 }
 
 void TestVec3()
@@ -133,15 +153,20 @@ void TestVec3()
     Vec3Cross(&Vec1, &Vec2, &VecOut);
     printf("Vec1 & Vec2 cross product result: X = %f Y = %f Z = %f\n\n", VecOut.X, VecOut.Y, VecOut.Z);
 
-    UnitVector(&Vec1);
+    Vec3UnitVector(&Vec1);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", Vec1.X, Vec1.Y, Vec1.Z);
     printf("Vec1 length: %f\n\n", Vec3Length(&Vec1));
 
-    UnitVector(&Vec2);
+    Vec3UnitVector(&Vec2);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", Vec2.X, Vec2.Y, Vec2.Z);
     printf("Vec2 length: %f\n\n", Vec3Length(&Vec2));
 
-    UnitVector(&VecOut);
+    vec3 NewUnitVector = Vec3NewUnitVector(&VecOut);
+    printf("Unit vector: X = %f Y = %f Z = %f\n\n", NewUnitVector.X, NewUnitVector.Y, NewUnitVector.Z);
+    printf("NewUnitVector length: %f\n\n", Vec3Length(&NewUnitVector));
+
+    Vec3UnitVector(&VecOut);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", VecOut.X, VecOut.Y, VecOut.Z);
     printf("VecOut length: %f\n\n", Vec3Length(&VecOut));
+
 }

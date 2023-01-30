@@ -9,9 +9,9 @@
 
 inline void WriteColor(char ColorBuffer[15], const color *Color)
 {
-    sprintf(ColorBuffer, "%d %d %d\n", 
-            (int)(Color->X * PIXEL_BOUND), 
-            (int)(Color->Y * PIXEL_BOUND), 
+    sprintf(ColorBuffer, "%d %d %d\n",
+            (int)(Color->X * PIXEL_BOUND),
+            (int)(Color->Y * PIXEL_BOUND),
             (int)(Color->Z * PIXEL_BOUND));
 }
 
