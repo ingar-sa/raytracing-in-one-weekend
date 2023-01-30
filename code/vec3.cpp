@@ -94,7 +94,7 @@ vec3 Vec3NewScaled(vec3 *Vec, double Scalar)
     __m256d mScalar = _mm256_loadu_pd((double *)aScalar);
     __m256d mResult = _mm256_mul_pd(mVec, mScalar);
 
-    double *Result = (double *)&mResult;
+    double *Result = (double *)&mResult;    
 
     vec3 ScaledVec = { Result[0], Result[1], Result[2] };
     return ScaledVec;

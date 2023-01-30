@@ -7,9 +7,9 @@
 
 #define PIXEL_BOUND 255.999
 
-inline void WriteColor(char ColorBuffer[15], const color *Color)
+inline void WriteColor(FILE *File, const color *Color)
 {
-    sprintf(ColorBuffer, "%d %d %d\n",
+    fprintf(File, "%d %d %d\n",
             (int)(Color->X * PIXEL_BOUND),
             (int)(Color->Y * PIXEL_BOUND),
             (int)(Color->Z * PIXEL_BOUND));
