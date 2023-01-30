@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <math.>
+#include <math.h>
+
 #include "vec3.hpp"
 #include "color.hpp"
 #include "ray.hpp"
+
+#include <windows.h>
+
 #define IMAGE_WIDTH 256
 #define IMAGE_HEIGHT 256
 
@@ -69,38 +73,51 @@ double HitSphere(point3 *Center, double Radius, ray *Ray)
 }
 
 
-color ray_color(const ray& r) {
-    auto t = hit_sphere(point3(0,0,-1), 0.5, r);
-    if (t > 0.0) {
-        vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
-        return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
-    }
-    vec3 unit_direction = unit_vector(r.direction());
-    t = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
-}
+// color ray_color(const ray& r) {
+//     auto t = hit_sphere(point3(0,0,-1), 0.5, r);
+//     if (t > 0.0) {
+//         vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
+//         return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+//     }
+//     vec3 unit_direction = unit_vector(r.direction());
+//     t = 0.5*(unit_direction.y() + 1.0);
+//     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+// }
 
 color RayColor(ray *Ray)
-{
-    point3 RedBall = {0, 0, -1};
-    double t = HitSphere(&RedBall, 0.5, Ray);
+{    
+    point3 SphereCenter = {0, 0, -1};
+    double t = HitSphere(&SphereCenter, 0.5, Ray);
 
-    if (t < 0.0)
+    if (t > 0.0)
     {
         point3 RayAtT = RayAtTime(Ray, t);
-        
-        vec3 Normal = Vec3NewUnitVector()
-        RayColor.X = 1.0;
-        return RayColor;
+        Vec3Sub(&RayAtT, &SphereCenter, &RayAtT);
+        vec3 Normal = Vec3NewUnitVector(&RayAtT);
+        color PixelColor = { Normal.X + 1, Normal.Y + 1, Normal.Z + 1 };
+
+        return Vec3NewScaled(&PixelColor, 0.5);
     }
 
-    return BackgroundColor(Ray);
+    vec3 DirectionUnitVec = Vec3NewUnitVector(&Ray->Direction);
+    t = 0.5 * (DirectionUnitVec.Y + 1.0);
+
+    color Lerp1Base = { 1, 1, 1 };
+    color Lerp1 = Vec3NewScaled(&Lerp1Base, (1.0 - t));
+
+    color Lerp2Base = { 0.5, 0.7, 1.0 };
+    color Lerp2 = Vec3NewScaled(&Lerp2Base, t);
+
+    color PixelColor = {};
+    Vec3Add(&Lerp1, &Lerp2, &PixelColor);
+
+    return PixelColor;
 }
 
 void RenderScene()
 {
     const float AspectRatio = 16.0 / 9.0;
-    const int32_t ImageWidth = 1080;
+    const int32_t ImageWidth = 1920;
     const int32_t ImageHeight = (int)(ImageWidth / AspectRatio);
 
     float ViewportHeight = 2.0;
@@ -124,6 +141,8 @@ void RenderScene()
     FILE *ImageFile = fopen(ppm_filename, "w");
     fprintf(ImageFile, "P3\n%d %d\n255\n", ImageWidth, ImageHeight);
 
+    LARGE_INTEGER StartCounter;
+    QueryPerformanceCounter(&StartCounter);
     for (int Y = ImageHeight - 1; Y >= 0; --Y)
     {
         printf("\rScanlines remaining: %d\n", Y);
@@ -145,6 +164,17 @@ void RenderScene()
             WriteColor(ImageFile, &PixelColor);
         }
     }
+
+    LARGE_INTEGER EndCounter;
+    QueryPerformanceCounter(&EndCounter);
+    int64_t CounterElapsed = EndCounter.QuadPart - StartCounter.QuadPart;
+
+    LARGE_INTEGER PerfCounterFrequencyResult;
+    QueryPerformanceFrequency(&PerfCounterFrequencyResult);
+    int64_t PerfCounterFrequency = PerfCounterFrequencyResult.QuadPart;
+    int64_t MSElapsed = ((1000 * CounterElapsed) / PerfCounterFrequency);
+
+    printf("Render time: %I64d\n", MSElapsed);
 }
 
 int main()

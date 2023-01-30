@@ -9,6 +9,6 @@ struct ray
     point3 Direction;
 };
 
-point3 RayAtTime(ray RayIn, double t);
+point3 RayAtTime(ray *RayIn, double t);
 
 #endif
