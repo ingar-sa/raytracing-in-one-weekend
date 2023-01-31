@@ -112,7 +112,7 @@ vec3 Vec3NewScaled(vec3 *Vec, double Scalar)
     return ScaledVec;
 }
 
-double Vec3LengthSquared(vec3 *Vec)
+double Vec3LengthSquaredSimd(vec3 *Vec)
 {
     __m256d mVec = _mm256_loadu_pd((const double *)Vec);
     __m256d mVec1 = _mm256_loadu_pd((const double *)Vec);
@@ -124,23 +124,23 @@ double Vec3LengthSquared(vec3 *Vec)
     return LengthSquared;
 }
 
-double Vec3Length(vec3 *Vec)
+double Vec3LengthSimd(vec3 *Vec)
 {
-    return sqrt(Vec3LengthSquared(Vec));
+    return sqrt(Vec3LengthSquaredSimd(Vec));
 }
 
 // NOTE(ingar): It might be prudent to make a version that returns a new vec3
-void Vec3UnitVector(vec3 *Vec)
+void Vec3UnitVectorSimd(vec3 *Vec)
 {
-    Vec3Scale(Vec, 1.0 / Vec3Length(Vec));
+    Vec3Scale(Vec, 1.0 / Vec3LengthSimd(Vec));
 }
 
-vec3 Vec3NewUnitVector(vec3 *Vec)
+vec3 Vec3NewUnitVectorSimd(vec3 *Vec)
 {
-    return Vec3NewScaled(Vec, 1.0 / Vec3Length(Vec));
+    return Vec3NewScaled(Vec, 1.0 / Vec3LengthSimd(Vec));
 }
 
-void TestVec3()
+void TestVec3Simd()
 {
     vec3 Vec1 = {10.0, -20.0, 30.0};
     vec3 Vec2 = {1.0, 2.0, 2.0};
@@ -158,28 +158,28 @@ void TestVec3()
     Vec3Scale(&Vec2, 3);
     printf("Scale result: X = %f Y = %f Z = %f\n\n", Vec2.X, Vec2.Y, Vec2.Z);
 
-    printf("Vec2 Length squared: %f\n\n", Vec3LengthSquared(&Vec2));
-    printf("Vec2 length: %f\n\n", Vec3Length(&Vec2));
+    printf("Vec2 Length squared: %f\n\n", Vec3LengthSquaredSimd(&Vec2));
+    printf("Vec2 length: %f\n\n", Vec3LengthSimd(&Vec2));
     printf("Vec2 dot product: %f\n\n", Vec3Dot(&Vec1, &Vec2));
 
     Vec3Cross(&Vec1, &Vec2, &VecOut);
     printf("Vec1 & Vec2 cross product result: X = %f Y = %f Z = %f\n\n", VecOut.X, VecOut.Y, VecOut.Z);
 
-    Vec3UnitVector(&Vec1);
+    Vec3UnitVectorSimd(&Vec1);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", Vec1.X, Vec1.Y, Vec1.Z);
-    printf("Vec1 length: %f\n\n", Vec3Length(&Vec1));
+    printf("Vec1 length: %f\n\n", Vec3LengthSimd(&Vec1));
 
-    Vec3UnitVector(&Vec2);
+    Vec3UnitVectorSimd(&Vec2);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", Vec2.X, Vec2.Y, Vec2.Z);
-    printf("Vec2 length: %f\n\n", Vec3Length(&Vec2));
+    printf("Vec2 length: %f\n\n", Vec3LengthSimd(&Vec2));
 
-    vec3 NewUnitVector = Vec3NewUnitVector(&VecOut);
+    vec3 NewUnitVector = Vec3NewUnitVectorSimd(&VecOut);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", NewUnitVector.X, NewUnitVector.Y, NewUnitVector.Z);
-    printf("NewUnitVector length: %f\n\n", Vec3Length(&NewUnitVector));
+    printf("NewUnitVector length: %f\n\n", Vec3LengthSimd(&NewUnitVector));
 
-    Vec3UnitVector(&VecOut);
+    Vec3UnitVectorSimd(&VecOut);
     printf("Unit vector: X = %f Y = %f Z = %f\n\n", VecOut.X, VecOut.Y, VecOut.Z);
-    printf("VecOut length: %f\n\n", Vec3Length(&VecOut));
+    printf("VecOut length: %f\n\n", Vec3LengthSimd(&VecOut));
 }
 
 #endif

@@ -1,14 +1,14 @@
+
+#include "vec3.hpp"
+#include "color_simd.hpp"
+#include "ray_simd.hpp"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-#include <iostream>
 #include <cstdio>
 #include <ctime>
 #include <chrono>
-
-#include "vec3_simd.hpp"
-#include "color_simd.hpp"
-#include "ray_simd.hpp"
 
 #define WINDOWS 0
 
@@ -153,12 +153,18 @@ void RenderScene()
     printf("Time elapse: %I64d", MSElapsed);
 #else
     std::chrono::duration<double> wctduration = (std::chrono::system_clock::now() - wcts);
-    std::cout << "Finished in " << wctduration.count() << " seconds [Wall Clock]" << std::endl;
+    printf("Finished in %f seconds\n", wctduration.count());
 #endif
 }
 
 int main()
 {
+#if USE_SIMD // The macro is in vec3.hpp
+    printf("Compiled for SIMD.\n");
+#else
+    printf("Not compiled for SIMD.\n");
+#endif
+
     RenderScene();
 
     return 0;
