@@ -1,7 +1,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "vec3_simd.hpp"
+#include "vec3_struct.hpp"
 
 struct ray
 {

@@ -21,7 +21,7 @@
 
 color BackgroundColor(ray *Ray)
 {
-    vec3 DirectionUnitVector = Vec3NewUnitVector(&Ray->Direction);
+    vec3 DirectionUnitVector = Vec3NewUnitVectorSimd(&Ray->Direction);
     double Scalar = 0.5 * (DirectionUnitVector.Y + 1.0);
 
     color Color1 = {1.0, 1.0, 1.0};
@@ -65,13 +65,13 @@ color RayColor(ray *Ray)
     {
         point3 RayAtT = RayAtTime(Ray, t);
         Vec3Sub(&RayAtT, &SphereCenter, &RayAtT);
-        vec3 Normal = Vec3NewUnitVector(&RayAtT);
+        vec3 Normal = Vec3NewUnitVectorSimd(&RayAtT);
         color PixelColor = { Normal.X + 1, Normal.Y + 1, Normal.Z + 1 };
 
         return Vec3NewScaled(&PixelColor, 0.5);
     }
 
-    vec3 DirectionUnitVec = Vec3NewUnitVector(&Ray->Direction);
+    vec3 DirectionUnitVec = Vec3NewUnitVectorSimd(&Ray->Direction);
     t = 0.5 * (DirectionUnitVec.Y + 1.0);
 
     color Lerp1Base = { 1, 1, 1 };

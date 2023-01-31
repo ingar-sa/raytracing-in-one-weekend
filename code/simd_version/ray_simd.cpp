@@ -1,6 +1,5 @@
-
 #include "ray_simd.hpp"
-#include "vec3_simd.hpp"
+#include "vec3.hpp"
 
 point3 RayAtTime(ray *RayIn, double t)
 {

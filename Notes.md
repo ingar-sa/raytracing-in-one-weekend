@@ -5,3 +5,4 @@ This is very sad.
 
 I do wonder if using iostream instead of stdio for the output would be faster. NOPE! It's way slower. Like 0.4-0.5 seconds slower. Shoot, dang!
 
+So I made a version of the Vec3 implementation where I just use regular operators. It is now by far the fastest version... :))) Why AVX? WHY?!
