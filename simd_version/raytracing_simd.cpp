@@ -1,3 +1,7 @@
+#include "vec3.hpp"
+#include "color.hpp"
+#include "ray.hpp"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
@@ -5,10 +9,6 @@
 #include <cstdio>
 #include <ctime>
 #include <chrono>
-
-#include "vec3.hpp"
-#include "color.hpp"
-#include "ray.hpp"
 
 #define WINDOWS 0
 
@@ -18,30 +18,6 @@
 
 #define IMAGE_WIDTH 256
 #define IMAGE_HEIGHT 256
-
-void GenerateExamplePPMFile()
-{
-    // const int IMAGE_WIDTH = 256;
-    // const int IMAGE_HEIGHT = 256;
-    char FileLine[15] = {};
-
-    const char ppm_filename[] = "../build_simd/image_simd.ppm";
-    FILE *ImageFile = fopen(ppm_filename, "w");
-
-    fprintf(ImageFile, "P3\n%d %d\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
-    for (int Y = IMAGE_HEIGHT; Y > 0; --Y)
-    {
-        // printf("Scanlines remaining: %d\n", Y);
-
-        for (int X = 0; X < IMAGE_WIDTH; ++X)
-        {
-            color PixelColor = {(double)X / (IMAGE_WIDTH - 1), (double)Y / (IMAGE_HEIGHT - 1), 0.25};
-            WriteColor(ImageFile, &PixelColor);
-        }
-    }
-
-    fclose(ImageFile);
-}
 
 color BackgroundColor(ray *Ray)
 {
@@ -77,23 +53,10 @@ double HitSphere(point3 *Center, double Radius, ray *Ray)
     {
         return (-b - sqrt(Discriminant)) / (2.0 * a);
     }
-    
 }
 
-
-// color ray_color(const ray& r) {
-//     auto t = hit_sphere(point3(0,0,-1), 0.5, r);
-//     if (t > 0.0) {
-//         vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
-//         return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
-//     }
-//     vec3 unit_direction = unit_vector(r.direction());
-//     t = 0.5*(unit_direction.y() + 1.0);
-//     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
-// }
-
 color RayColor(ray *Ray)
-{    
+{
     point3 SphereCenter = {0, 0, -1};
     double t = HitSphere(&SphereCenter, 0.5, Ray);
 
@@ -102,7 +65,7 @@ color RayColor(ray *Ray)
         point3 RayAtT = RayAtTime(Ray, t);
         Vec3Sub(&RayAtT, &SphereCenter, &RayAtT);
         vec3 Normal = Vec3NewUnitVector(&RayAtT);
-        color PixelColor = { Normal.X + 1, Normal.Y + 1, Normal.Z + 1 };
+        color PixelColor = {Normal.X + 1, Normal.Y + 1, Normal.Z + 1};
 
         return Vec3NewScaled(&PixelColor, 0.5);
     }
@@ -110,10 +73,10 @@ color RayColor(ray *Ray)
     vec3 DirectionUnitVec = Vec3NewUnitVector(&Ray->Direction);
     t = 0.5 * (DirectionUnitVec.Y + 1.0);
 
-    color Lerp1Base = { 1, 1, 1 };
+    color Lerp1Base = {1, 1, 1};
     color Lerp1 = Vec3NewScaled(&Lerp1Base, (1.0 - t));
 
-    color Lerp2Base = { 0.5, 0.7, 1.0 };
+    color Lerp2Base = {0.5, 0.7, 1.0};
     color Lerp2 = Vec3NewScaled(&Lerp2Base, t);
 
     color PixelColor = {};
@@ -149,16 +112,21 @@ void RenderScene()
     FILE *ImageFile = fopen(ppm_filename, "w");
     fprintf(ImageFile, "P3\n%d %d\n255\n", ImageWidth, ImageHeight);
 
-    #if WINDOWS
+#if WINDOWS
     LARGE_INTEGER StartCounter;
     QueryPerformanceCounter(&StartCounter);
-    #endif 
+#endif
 
     auto wcts = std::chrono::system_clock::now();
+    
+    std::cout << "P3\n"
+              << ImageWidth << " " << ImageHeight << "\n255\n";
 
     for (int Y = ImageHeight - 1; Y >= 0; --Y)
     {
-        printf("\rScanlines remaining: %d\n", Y);
+        // printf("\rScanlines remaining: %d\n", Y);
+        std::cerr << "\rScanlines remaining: " << Y << ' ' << '\n'
+                  << std::flush;
 
         for (int X = 0; X < ImageWidth; ++X)
         {
@@ -174,11 +142,11 @@ void RenderScene()
 
             ray Ray = {Origin, RayDirection};
             color PixelColor = RayColor(&Ray);
-            WriteColor(ImageFile, &PixelColor);
+            WriteColor(std::cout, &PixelColor);
         }
     }
 
-    #if WINDOWS
+#if WINDOWS
     LARGE_INTEGER EndCounter;
     QueryPerformanceCounter(&EndCounter);
     int64_t CounterElapsed = EndCounter.QuadPart - StartCounter.QuadPart;
@@ -187,10 +155,10 @@ void RenderScene()
     QueryPerformanceFrequency(&PerfCounterFrequencyResult);
     int64_t PerfCounterFrequency = PerfCounterFrequencyResult.QuadPart;
     int64_t MSElapsed = ((1000 * CounterElapsed) / PerfCounterFrequency);
-    #endif
-    
+#endif
+
     std::chrono::duration<double> wctduration = (std::chrono::system_clock::now() - wcts);
-    std::cout << "Finished in " << wctduration.count() << " seconds [Wall Clock]" << std::endl;
+    std::cerr << "Finished in " << wctduration.count() << " seconds [Wall Clock]" << std::endl;
 }
 
 int main()
@@ -202,3 +170,29 @@ int main()
 
     return 0;
 }
+
+/*
+void GenerateExamplePPMFile()
+{
+    // const int IMAGE_WIDTH = 256;
+    // const int IMAGE_HEIGHT = 256;
+    char FileLine[15] = {};
+
+    const char ppm_filename[] = "../build_simd/image_simd.ppm";
+    FILE *ImageFile = fopen(ppm_filename, "w");
+
+    fprintf(ImageFile, "P3\n%d %d\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
+    for (int Y = IMAGE_HEIGHT; Y > 0; --Y)
+    {
+        // printf("Scanlines remaining: %d\n", Y);
+
+        for (int X = 0; X < IMAGE_WIDTH; ++X)
+        {
+            color PixelColor = {(double)X / (IMAGE_WIDTH - 1), (double)Y / (IMAGE_HEIGHT - 1), 0.25};
+            // WriteColor(ImageFile, &PixelColor);
+        }
+    }
+
+    fclose(ImageFile);
+}
+*/

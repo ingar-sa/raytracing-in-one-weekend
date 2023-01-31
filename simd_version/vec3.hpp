@@ -1,6 +1,8 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <iostream>
+
 struct vec3
 {
     double X = 0.0;
@@ -32,5 +34,9 @@ using color = vec3; // RGB color
 
 // typedef vec3 point3;
 // typedef vec3 color;
+
+inline std::ostream& operator<<(std::ostream &out, const vec3 &Vec) {
+    return out << Vec.X << ' ' << Vec.Y << ' ' << Vec.Z;
+}
 
 #endif //VEC3_H
