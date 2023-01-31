@@ -6,3 +6,8 @@ This is very sad.
 I do wonder if using iostream instead of stdio for the output would be faster. NOPE! It's way slower. Like 0.4-0.5 seconds slower. Shoot, dang!
 
 So I made a version of the Vec3 implementation where I just use regular operators. It is now by far the fastest version... :))) Why AVX? WHY?!
+
+I thought about changing the vec3 member data types from double to float to see if that would increase the SIMD speed. However, this won't work.
+We would only get a speed increase if we could operate on more vectors at once, which is not the case with the current implementation.
+
+
