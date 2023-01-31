@@ -1,6 +1,13 @@
+#ifndef RAY_H
+#define RAY_H
 
-#include "ray.hpp"
-#include "vec3.hpp"
+#include "vec3_headerv.hpp"
+
+struct ray
+{
+    point3 Origin;
+    point3 Direction;
+};
 
 point3 RayAtTime(ray *RayIn, double t)
 {
@@ -9,3 +16,5 @@ point3 RayAtTime(ray *RayIn, double t)
     Vec3Add(&RayIn->Origin, &ScaledDirection, &PointInTime);
     return PointInTime;
 }
+
+#endif

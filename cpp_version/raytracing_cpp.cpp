@@ -1,6 +1,6 @@
-#include "color.hpp"
-#include "ray.hpp"
-#include "vec3.hpp"
+#include "color_cpp.hpp"
+#include "ray_cpp.hpp"
+#include "vec3_cpp.hpp"
 
 #include <iostream>
 #include <cstdio>

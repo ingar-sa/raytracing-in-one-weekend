@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "vec3.hpp"
+#include "vec3_simd.hpp"
 
 void Vec3Add(vec3 *Vec1, vec3 *Vec2, vec3 *VecOut)
 {

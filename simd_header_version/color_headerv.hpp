@@ -1,9 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include <stdio.h>
-
-#include "vec3.hpp"
+#include "vec3_headerv.hpp"
 
 #define PIXEL_BOUND 255.999
 

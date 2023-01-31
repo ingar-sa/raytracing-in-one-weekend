@@ -6,9 +6,9 @@
 #include <ctime>
 #include <chrono>
 
-#include "vec3.hpp"
-#include "color.hpp"
-#include "ray.hpp"
+#include "vec3_headerv.hpp"
+#include "color_headerv.hpp"
+#include "ray_headerv.hpp"
 
 #define WINDOWS 0
 
