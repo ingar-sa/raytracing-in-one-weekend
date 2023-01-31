@@ -3,14 +3,8 @@
 **/*.ppm
 **/*.bat
 
-/code/build
-/code/run
-build
-
+build_simd
 build_cpp
-/cpp_version/build_cpp
-/cpp_version/run_cpp
-
 build_header
-/header_only_version/build_header
-/header_only_version/run_header
+
+scripts

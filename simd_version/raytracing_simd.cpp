@@ -25,7 +25,7 @@ void GenerateExamplePPMFile()
     // const int IMAGE_HEIGHT = 256;
     char FileLine[15] = {};
 
-    const char ppm_filename[] = "../build/image.ppm";
+    const char ppm_filename[] = "../build_simd/image_simd.ppm";
     FILE *ImageFile = fopen(ppm_filename, "w");
 
     fprintf(ImageFile, "P3\n%d %d\n255\n", IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -145,7 +145,7 @@ void RenderScene()
     Vec3Sub(&LowerLeftCorner, &HalfVertical, &LowerLeftCorner);
     Vec3Sub(&LowerLeftCorner, &Center, &LowerLeftCorner);
 
-    const char ppm_filename[] = "../build/image.ppm";
+    const char ppm_filename[] = "../build_simd/image_simd.ppm";
     FILE *ImageFile = fopen(ppm_filename, "w");
     fprintf(ImageFile, "P3\n%d %d\n255\n", ImageWidth, ImageHeight);
 
