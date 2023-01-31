@@ -89,7 +89,7 @@ color RayColor(ray *Ray)
 void RenderScene()
 {
     const float AspectRatio = 16.0 / 9.0;
-    const int32_t ImageWidth = 2480;
+    const int32_t ImageWidth = 1280;
     const int32_t ImageHeight = (int)(ImageWidth / AspectRatio);
 
     float ViewportHeight = 2.0;
@@ -122,7 +122,7 @@ void RenderScene()
 
     for (int Y = ImageHeight - 1; Y >= 0; --Y)
     {
-        printf("\rScanlines remaining: %d\n", Y);
+        // printf("\rScanlines remaining: %d\n", Y);
 
         for (int X = 0; X < ImageWidth; ++X)
         {

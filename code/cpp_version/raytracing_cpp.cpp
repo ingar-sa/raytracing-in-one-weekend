@@ -42,7 +42,7 @@ int main()
 
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 2480;
+    const int image_width = 1280;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
     // Camera
@@ -65,8 +65,8 @@ int main()
 
     for (int j = image_height - 1; j >= 0; --j)
     {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << '\n'
-                  << std::flush;
+        // std::cerr << "\rScanlines remaining: " << j << ' ' << '\n'
+                //   << std::flush;
         for (int i = 0; i < image_width; ++i)
         {
             auto u = double(i) / (image_width - 1);
@@ -80,5 +80,5 @@ int main()
     std::chrono::duration<double> wctduration = (std::chrono::system_clock::now() - wcts);
     std::cerr << "Finished in " << wctduration.count() << " seconds [Wall Clock]" << std::endl;
 
-    std::cerr << "\nDone.\n";
+    // std::cerr << "\nDone.\n";
 }

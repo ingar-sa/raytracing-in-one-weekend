@@ -84,16 +84,8 @@ color RayColor(ray *Ray)
 
 void RenderScene()
 {
-
-#if WINDOWS
-    LARGE_INTEGER StartCounter;
-    QueryPerformanceCounter(&StartCounter);
-#else
-    auto wcts = std::chrono::system_clock::now();
-#endif
-
     const float AspectRatio = 16.0 / 9.0;
-    const int32_t ImageWidth = 2480;
+    const int32_t ImageWidth = 1280;
     const int32_t ImageHeight = (int)(ImageWidth / AspectRatio);
 
     float ViewportHeight = 2.0;
@@ -118,9 +110,16 @@ void RenderScene()
     FILE *ImageFile = fopen(ppm_filename, "w");
     fprintf(ImageFile, "P3\n%d %d\n255\n", ImageWidth, ImageHeight);
 
+#if WINDOWS
+    LARGE_INTEGER StartCounter;
+    QueryPerformanceCounter(&StartCounter);
+#else
+    auto wcts = std::chrono::system_clock::now();
+#endif
+
     for (int Y = ImageHeight - 1; Y >= 0; --Y)
     {
-        printf("\rScanlines remaining: %d\n", Y);
+        // printf("\rScanlines remaining: %d\n", Y);
 
         for (int X = 0; X < ImageWidth; ++X)
         {
