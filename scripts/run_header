@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pushd ../build/build_simd &> /dev/null
+./raytracing_headerv
+popd &> /dev/null

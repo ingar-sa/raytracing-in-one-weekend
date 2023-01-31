@@ -1,10 +1,7 @@
 .vscode
 
 **/*.ppm
-**/*.bat
 
-build_simd
-build_cpp
-build_header
-
-scripts
+/build/build_simd/*
+/build/build_cpp/*
+/build/build_header/*

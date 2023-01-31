@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "==================STARTING BUILD=================="
+pushd ../build/build_cpp &> /dev/null
+g++ -Wextra -g -mavx2 -o raytracing_cpp ../../code/cpp_version/raytracing_cpp.cpp -lm
+popd &> /dev/null
+echo "==================BUILD FINISHED=================="

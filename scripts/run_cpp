@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pushd ../build/build_cpp &> /dev/null
+./raytracing_cpp > image_cpp.ppm
+popd &> /dev/null
