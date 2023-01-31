@@ -1,12 +1,16 @@
 .vscode
 
+**/*.ppm
+**/*.bat
+
 /code/build
 /code/run
 build
-**/*.ppm
 
 build_cpp
 /cpp_version/build_cpp
 /cpp_version/run_cpp
 
-**/*.bat
+build_header
+/header_only_version/build_header
+/header_only_version/run_header
