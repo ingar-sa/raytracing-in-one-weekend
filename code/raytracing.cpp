@@ -1,12 +1,20 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
+#include <iostream>
+#include <cstdio>
+#include <ctime>
+#include <chrono>
 
 #include "vec3.hpp"
 #include "color.hpp"
 #include "ray.hpp"
 
+#define WINDOWS 0
+
+#if WINDOWS
 #include <windows.h>
+#endif
 
 #define IMAGE_WIDTH 256
 #define IMAGE_HEIGHT 256
@@ -117,7 +125,7 @@ color RayColor(ray *Ray)
 void RenderScene()
 {
     const float AspectRatio = 16.0 / 9.0;
-    const int32_t ImageWidth = 1920;
+    const int32_t ImageWidth = 2480;
     const int32_t ImageHeight = (int)(ImageWidth / AspectRatio);
 
     float ViewportHeight = 2.0;
@@ -141,8 +149,13 @@ void RenderScene()
     FILE *ImageFile = fopen(ppm_filename, "w");
     fprintf(ImageFile, "P3\n%d %d\n255\n", ImageWidth, ImageHeight);
 
+    #if WINDOWS
     LARGE_INTEGER StartCounter;
     QueryPerformanceCounter(&StartCounter);
+    #endif 
+
+    auto wcts = std::chrono::system_clock::now();
+
     for (int Y = ImageHeight - 1; Y >= 0; --Y)
     {
         printf("\rScanlines remaining: %d\n", Y);
@@ -165,6 +178,7 @@ void RenderScene()
         }
     }
 
+    #if WINDOWS
     LARGE_INTEGER EndCounter;
     QueryPerformanceCounter(&EndCounter);
     int64_t CounterElapsed = EndCounter.QuadPart - StartCounter.QuadPart;
@@ -173,8 +187,10 @@ void RenderScene()
     QueryPerformanceFrequency(&PerfCounterFrequencyResult);
     int64_t PerfCounterFrequency = PerfCounterFrequencyResult.QuadPart;
     int64_t MSElapsed = ((1000 * CounterElapsed) / PerfCounterFrequency);
-
-    printf("Render time: %I64d\n", MSElapsed);
+    #endif
+    
+    std::chrono::duration<double> wctduration = (std::chrono::system_clock::now() - wcts);
+    std::cout << "Finished in " << wctduration.count() << " seconds [Wall Clock]" << std::endl;
 }
 
 int main()

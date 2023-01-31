@@ -1,6 +1,12 @@
+.vscode
+
 /code/build
 /code/run
 build
-**/*.bat
 **/*.ppm
-.vscode
+
+build_cpp
+/cpp_version/build_cpp
+/cpp_version/run_cpp
+
+**/*.bat
