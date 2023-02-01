@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <ctime>
 #include <chrono>
+#include <immintrin.h>
 
 #define WINDOWS 0
 
@@ -103,6 +104,9 @@ void RenderScene()
     vec3 Vertical = {0, ViewportHeight, 0};
     vec3 Center = {0, 0, FocalLenght}; // I think this is the center
 
+    // point3 LowerLeftCorner = {-ViewportWidth / 2, -ViewportHeight / 2, -FocalLenght};
+
+    // /* Note(ingar): Replaced by the line above
     point3 LowerLeftCorner = {};
     vec3 HalfHorizontal = Vec3NewScaled(&Horizontal, 0.5);
     vec3 HalfVertical = Vec3NewScaled(&Vertical, 0.5);
@@ -110,8 +114,18 @@ void RenderScene()
     Vec3Sub(&Origin, &HalfHorizontal, &LowerLeftCorner);
     Vec3Sub(&LowerLeftCorner, &HalfVertical, &LowerLeftCorner);
     Vec3Sub(&LowerLeftCorner, &Center, &LowerLeftCorner);
+    // */
 
+    __m256d mmLowerLeftCorner = _mm256_loadu_pd((const double *)&LowerLeftCorner);
+    __m256d mmOrigin = _mm256_loadu_pd((const double *)&Origin);
+    __m256d mmHorizontal = _mm256_loadu_pd((const double *)&Horizontal);
+    __m256d mmVertical = _mm256_loadu_pd((const double *)&Vertical);
+
+#if BUILD_SIMD
     const char ppm_filename[] = "image_simd.ppm";
+#else
+    const char ppm_filename[] = "image_no_simd.ppm";
+#endif
 
     FILE *ImageFile = fopen(ppm_filename, "w");
     fprintf(ImageFile, "P3\n%d %d\n255\n", ImageWidth, ImageHeight);
@@ -131,20 +145,20 @@ void RenderScene()
         {
             double U = (double)X / (ImageWidth - 1);
             double V = (double)Y / (ImageHeight - 1);
-            vec3 UHorizontal = Vec3NewScaled(&Horizontal, U);
-            vec3 VVertical = Vec3NewScaled(&Vertical, V);
+            double UArray[] = {U, U, U};
+            double VArray[] = {V, V, V};
+            
+            __m256d mmU = _mm256_loadu_pd((const double *)&UArray);
+            __m256d mmV = _mm256_loadu_pd((const double *)&VArray);
+            __m256d mmUHorizontal = _mm256_mul_pd(mmHorizontal, mmU);
+            __m256d mmVVertical = _mm256_mul_pd(mmVertical, mmV);
 
-            // When there are multiple calls to the simd vec3 functions, 
-            // the vectors are loaded into the ymm registers and then the 
-            // result is retrieved from them. This is probably a huge waste 
-            // of processor time, and the reason for why it's the slowest 
-            // version of the tracers.
-            // This means that we hreally have to write the simd intrinsics
-            // inline, which will make the code less legible
-            vec3 RayDirection = {};
-            Vec3Add(&LowerLeftCorner, &UHorizontal, &RayDirection);
-            Vec3Add(&RayDirection, &VVertical, &RayDirection);
-            Vec3Sub(&RayDirection, &Origin, &RayDirection);
+            __m256d mmRayDirection = _mm256_add_pd(mmLowerLeftCorner, mmUHorizontal);
+            mmRayDirection = _mm256_add_pd(mmRayDirection, mmVVertical);
+            mmRayDirection = _mm256_sub_pd(mmRayDirection, mmOrigin);
+
+            double *Result = (double *)&mmRayDirection;
+            vec3 RayDirection = {Result[0], Result[1], Result[2]};
 
             ray Ray = {Origin, RayDirection};
             color PixelColor = RayColor(&Ray);
