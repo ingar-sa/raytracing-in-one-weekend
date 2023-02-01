@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+
+echo "==================STARTING BUILD=================="
+pushd ../build/build_simd &> /dev/null
+g++ -Wextra -g -mavx2 -o raytracing_simd ../../code/simd_version/raytracing_simd.cpp -lm
+popd &> /dev/null
+echo "==================BUILD FINISHED=================="

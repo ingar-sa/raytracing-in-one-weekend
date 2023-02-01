@@ -1,7 +1,13 @@
-
 #include "vec3.hpp"
 #include "color_simd.hpp"
-#include "ray_simd.hpp"
+
+#if BUILD_SIMD
+#include "vec3_simd.cpp"
+#else
+#include "vec3_no_simd.cpp"
+#endif
+
+#include "ray_simd.cpp"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -166,7 +172,7 @@ void RenderScene()
 
 int main()
 {
-#if USE_SIMD // The macro is in vec3.hpp
+#if BUILD_SIMD // The macro is in vec3.hpp
     printf("Compiled for SIMD.\n");
 #else
     printf("Not compiled for SIMD.\n");

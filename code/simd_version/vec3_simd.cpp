@@ -118,7 +118,6 @@ double Vec3LengthSimd(vec3 *Vec)
     return sqrt(Vec3LengthSquaredSimd(Vec));
 }
 
-// NOTE(ingar): It might be prudent to make a version that returns a new vec3
 void Vec3UnitVectorSimd(vec3 *Vec)
 {
     Vec3ScaleSimd(Vec, 1.0 / Vec3LengthSimd(Vec));

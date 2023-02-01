@@ -18,4 +18,4 @@ cannot optimize these instructions. This makes sense to me, since the values are
 or returned as a value.
 
 The next thing on the agenda is therefore to write a version with inline use of intrinsics. A problem with this is code legibility, but as a wise man
-once said: "If you can't understand my code without comments, you don't deserve to understand it."
+once said: "If you can't understand my code without comments, you don't deserve to understand it." Truly words to live by.

@@ -3,9 +3,9 @@
 
 #include "vec3_struct.hpp"
 
-#define USE_SIMD 0
+#define BUILD_SIMD 1
 
-#if USE_SIMD
+#if BUILD_SIMD
 
 #define Vec3Add Vec3AddSimd
 #define Vec3Sub Vec3SubSimd
