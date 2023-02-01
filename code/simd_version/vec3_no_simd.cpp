@@ -77,9 +77,9 @@ void UnitVector(vec3 *Vec)
 vec3 Vec3NewUnitVector(vec3 *Vec)
 {
     double Scalar = Vec3Length(Vec);
-    vec3 UnitVec = {Vec->X * Scalar,
-                    Vec->Y * Scalar,
-                    Vec->Z * Scalar};
+    vec3 UnitVec = {Vec->X * 1 / Scalar,
+                    Vec->Y * 1 / Scalar,
+                    Vec->Z * 1 / Scalar};
 
     return UnitVec;
 }
