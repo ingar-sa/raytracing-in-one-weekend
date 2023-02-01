@@ -128,6 +128,13 @@ void RenderScene()
             vec3 UHorizontal = Vec3NewScaled(&Horizontal, U);
             vec3 VVertical = Vec3NewScaled(&Vertical, V);
 
+            // When there are multiple calls to the simd vec3 functions, 
+            // the vectors are loaded into the ymm registers and then the 
+            // result is retrieved from them. This is probably a huge waste 
+            // of processor time, and the reason for why it's the slowest 
+            // version of the tracers.
+            // This means that we hreally have to write the simd intrinsics
+            // inline, which will make the code less legible
             vec3 RayDirection = {};
             Vec3Add(&LowerLeftCorner, &UHorizontal, &RayDirection);
             Vec3Add(&RayDirection, &VVertical, &RayDirection);
