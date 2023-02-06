@@ -42,11 +42,11 @@ double HitSphere(point3 *Center, double Radius, ray *Ray)
     // We will be using the abc-formula: (-b +/- sqrt(b^2-4ac))/2
     vec3 OriginToCenter = {};
     Vec3Sub(&Ray->Origin, Center, &OriginToCenter);
-
-    double a = Vec3Dot(&Ray->Direction, &Ray->Direction);
-    double b = 2.0 * Vec3Dot(&OriginToCenter, &Ray->Direction);
-    double c = Vec3Dot(&OriginToCenter, &OriginToCenter) - Radius * Radius;
-    double Discriminant = b * b - 4 * a * c;
+    double A = Vec3LengthSquared(&Ray->Direction);
+    // double a = Vec3Dot(&Ray->Direction, &Ray->Direction);
+    double HalfB = Vec3Dot(&OriginToCenter, &Ray->Direction);
+    double C = Vec3Dot(&OriginToCenter, &OriginToCenter) - Radius * Radius;
+    double Discriminant = HalfB * HalfB - A * C;
 
     if (Discriminant < 0)
     {
@@ -54,9 +54,27 @@ double HitSphere(point3 *Center, double Radius, ray *Ray)
     }
     else
     {
-        return (-b - sqrt(Discriminant)) / (2.0 * a);
+        return (-HalfB - sqrt(Discriminant)) / A;
     }
 }
+
+// double hit_sphere(const point3 &center, double radius, const ray &r)
+// {
+//     vec3 oc = r.origin() - center;
+//     auto a = r.direction().length_squared();
+//     auto half_b = dot(oc, r.direction());
+//     auto c = oc.length_squared() - radius * radius;
+//     auto discriminant = half_b * half_b - a * c;
+
+//     if (discriminant < 0)
+//     {
+//         return -1.0;
+//     }
+//     else
+//     {
+//         return (-half_b - sqrt(discriminant)) / a;
+//     }
+// }
 
 color RayColor(ray *Ray)
 {
