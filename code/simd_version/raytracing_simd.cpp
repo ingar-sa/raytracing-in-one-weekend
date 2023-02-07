@@ -163,6 +163,7 @@ void RenderScene()
         {
             double U = (double)X / (ImageWidth - 1);
             double V = (double)Y / (ImageHeight - 1);
+
             double UArray[] = {U, U, U};
             double VArray[] = {V, V, V};
             

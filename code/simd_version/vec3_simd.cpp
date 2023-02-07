@@ -3,6 +3,10 @@
 /*
 When there are multiple calls to the simd vec3 functions,
 the vectors are loaded into the ymm registers and then the
+<<<<<<< HEAD
+=======
+
+>>>>>>> 29a5a1100e40e58ce41d5e74aed296a3794c1488
 result is retrieved from them in every call. This is probably a huge waste
 of processor time, and the reason for why it's the slowest version of the tracers.
 
