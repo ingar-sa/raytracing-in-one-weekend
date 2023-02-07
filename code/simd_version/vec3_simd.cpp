@@ -1,6 +1,7 @@
 /*
 When there are multiple calls to the simd vec3 functions,
 the vectors are loaded into the ymm registers and then the
+
 result is retrieved from them in every call. This is probably a huge waste
 of processor time, and the reason for why it's the slowest version of the tracers.
 
@@ -12,8 +13,6 @@ in the name of going fast, right?
 #include <immintrin.h>
 #include <stdio.h>
 #include <math.h>
-
-#include "vec3_struct.hpp"
 
 void Vec3AddSimd(vec3 *Vec1, vec3 *Vec2, vec3 *VecOut)
 {

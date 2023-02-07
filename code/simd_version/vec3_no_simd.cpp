@@ -45,9 +45,9 @@ void Vec3Cross(vec3 *Vec1, vec3 *Vec2, vec3 *VecOut)
 
 void Vec3Scale(vec3 *Vec, double Scalar)
 {
-    Vec->X = Vec->X * Scalar;
-    Vec->Y = Vec->Y * Scalar;
-    Vec->Z = Vec->Z * Scalar;
+    Vec->X *= Scalar;
+    Vec->Y *= Scalar;
+    Vec->Z *= Scalar;
 }
 
 vec3 Vec3NewScaled(vec3 *Vec, double Scalar)
@@ -77,9 +77,5 @@ void UnitVector(vec3 *Vec)
 vec3 Vec3NewUnitVector(vec3 *Vec)
 {
     double Scalar = Vec3Length(Vec);
-    vec3 UnitVec = {Vec->X * 1 / Scalar,
-                    Vec->Y * 1 / Scalar,
-                    Vec->Z * 1 / Scalar};
-
-    return UnitVec;
+    return Vec3NewScaled(Vec, 1 / Scalar);
 }

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "==================STARTING BUILD=================="
-pushd ../build/build_header &> /dev/null
-g++ -Wextra -g -mavx2 -o raytracing_headerv ../../code/simd_header_version/raytracing_headerv.cpp -lm
-popd &> /dev/null
-echo "==================BUILD FINISHED=================="
