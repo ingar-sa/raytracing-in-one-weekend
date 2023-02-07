@@ -1,14 +1,15 @@
+#include "vec3.hpp"
+
 /*
 When there are multiple calls to the simd vec3 functions,
 the vectors are loaded into the ymm registers and then the
-result is retrieved from them every function call. This is probably a huge waste
+result is retrieved from them in every call. This is probably a huge waste
 of processor time, and the reason for why it's the slowest version of the tracers.
-This means that we really have to write the simd intrinsics
-inline, which will make the code less legible. But hey, everything in the name
-of speed, am I right?
-*/
 
-#include "vec3_struct.hpp"
+This means that we really have to write the simd intrinsics 
+inline, which will make the code less legible. But hey, anything
+in the name of going fast, right?
+*/
 
 #include <immintrin.h>
 #include <stdio.h>
