@@ -74,7 +74,7 @@ color RayColor(ray *Ray)
         return Vec3NewScaled(&PixelColor, 0.5);
     }
 
-    vec3 DirectionUnitVec = Vec3NewUnitVector(&Ray->Direction);
+    vec3 DirectionUnitVec = Vec3NewUnitVector(&Ray->Direction); // foo
     t = 0.5 * (DirectionUnitVec.Y + 1.0);
 
     color Lerp1Base = {1, 1, 1};
