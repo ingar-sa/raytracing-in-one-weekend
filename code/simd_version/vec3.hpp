@@ -3,7 +3,7 @@
 
 #include "vec3_struct.hpp"
 
-#define BUILD_SIMD 0
+#define BUILD_SIMD 1
 
 #if BUILD_SIMD
 

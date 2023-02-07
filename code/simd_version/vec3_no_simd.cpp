@@ -45,9 +45,9 @@ void Vec3Cross(vec3 *Vec1, vec3 *Vec2, vec3 *VecOut)
 
 void Vec3Scale(vec3 *Vec, double Scalar)
 {
-    Vec->X *Scalar;
-    Vec->Y *Scalar;
-    Vec->Z *Scalar;
+    Vec->X *= Scalar;
+    Vec->Y *= Scalar;
+    Vec->Z *= Scalar;
 }
 
 vec3 Vec3NewScaled(vec3 *Vec, double Scalar)
